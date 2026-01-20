@@ -139,11 +139,11 @@ MonoBehaviour:
   type: 0
   button: {fileID: 843030639989698739}
   iconImage: {fileID: 2863649718417573115}
-  startSprite: {fileID: -3965641761243902318, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
-  battleSprite: {fileID: 8601635973125964592, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
-  eliteSprite: {fileID: 6478880788902944492, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
-  shopSprite: {fileID: -1712139914659448872, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
-  restSprite: {fileID: 754125256743782851, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
-  bossSprite: {fileID: -5408986931645500983, guid: 71ccf5a1ea0825544b66b6e8c250cf7a, type: 3}
+  startSprite: {fileID: -3987321078998013900, guid: 3da34635a9357c140b5606b0d13894d4, type: 3}
+  battleSprite: {fileID: -8696224126886063595, guid: 35fdd009582055d4490e5a1f6610f1d0, type: 3}
+  eliteSprite: {fileID: -8696224126886063595, guid: 35fdd009582055d4490e5a1f6610f1d0, type: 3}
+  shopSprite: {fileID: 8564887612182842411, guid: 40f45a3fc69c5fa4fbc84430a9202df1, type: 3}
+  restSprite: {fileID: -3020096530120565150, guid: 7a219b485b323b646b4b041230e67196, type: 3}
+  bossSprite: {fileID: -8902839454697794943, guid: 1fcf845581a9db74f840783042465d0b, type: 3}
   lockedAlpha: 1
   normalAlpha: 1
