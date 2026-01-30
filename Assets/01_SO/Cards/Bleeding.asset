@@ -10,20 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aad6a68567137634a8e3a606866f34cd, type: 3}
-  m_Name: Attack
+  m_Name: Bleeding
   m_EditorClassIdentifier: Assembly-CSharp::CardData
-  cardName: "\uAC15\uD0C0"
+  cardName: "\uACFC\uB2E4\uCD9C\uD608"
   description: 
   cost: 1
   cardImage: {fileID: 0}
   cardEffects:
-  - rid: 6312052694012133449
+  - rid: 6312052845690486785
   references:
     version: 2
     RefIds:
-    - rid: 6312052694012133449
-      type: {class: AttackEffect, ns: , asm: Assembly-CSharp}
+    - rid: 6312052845690486785
+      type: {class: DebuffEffect, ns: , asm: Assembly-CSharp}
       data:
         targetType: 1
-        damage: 3
-        perentageDamage: 0
+        debuffType: 2
+        debuff: 0
+        debuffAmount: 0
+        durationTurns: 0

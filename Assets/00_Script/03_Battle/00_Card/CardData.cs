@@ -35,6 +35,12 @@ public enum CardType
     Heal,
     Debuff,
 }
+public enum TargetType
+{
+    Self,
+    Enemy,
+    AllEnemies,
+}
 [Serializable]
 public abstract class CardEffectBase
 {
@@ -45,28 +51,30 @@ public abstract class CardEffectBase
 public class AttackEffect : CardEffectBase
 {
     public override CardType cardType => CardType.Attack;
-    
+    public TargetType targetType;
+
     public int damage;
+    public float perentageDamage;
 }
 [Serializable]
 public class HealEffect : CardEffectBase
 {
     public override CardType cardType => CardType.Heal;
-    
+    public TargetType targetType;
     public int heal;
 }
 [Serializable]
 public class DrawEffect : CardEffectBase
 {
     public override CardType cardType => CardType.Draw;
-    
+    public TargetType targetType;
     public int drawCount;
 }
 [Serializable]
 public class BarrierEffect : CardEffectBase
 {
     public override CardType cardType => CardType.Barrier;
-    
+    public TargetType targetType;
     public int barrierAmount;
 }
 
@@ -81,9 +89,22 @@ public enum DebuffType
 public class DebuffEffect : CardEffectBase
 {
     public override CardType cardType => CardType.Debuff;
-    
+    public TargetType targetType;
     public DebuffType debuffType;
     public float debuff;
     public int debuffAmount;
     public int durationTurns;
+}
+
+[Serializable]
+public class BonusDamageIfDebuffEffect : CardEffectBase
+{
+    public override CardType cardType => CardType.Attack;
+
+    public TargetType targetType = TargetType.Enemy;
+
+    public DebuffType requiredDebuff = DebuffType.Bleed;
+
+    public int bonusDamageFlat = 0;     // 출혈이면 +N
+    public int bonusDamagePerStack = 0; // 출혈 스택당 +N
 }
