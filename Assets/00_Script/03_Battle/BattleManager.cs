@@ -34,7 +34,6 @@ public class BattleManager : MonoBehaviour
     {
         if (playerUnit == null || enemyUnit == null)
         {
-            Debug.LogError("[BattleManager] 플레이어 또는 적 유닛이 설정되지 않았습니다!");
             return;
         }
 
