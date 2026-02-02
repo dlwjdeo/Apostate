@@ -1,5 +1,5 @@
-using NUnit.Framework;
 using UnityEngine;
+using System;
 
 public abstract class Unit : MonoBehaviour
 {
@@ -16,11 +16,17 @@ public abstract class Unit : MonoBehaviour
     public int MaxCost => maxCost;
     public int CurrentCost => currentCost;
     public bool IsDead => currentHp <= 0;
+    public UnitType Type => unitType;
+
+    public event Action OnDead;
+    public event Action<int> OnDamageReceived;
+    public event Action<int> OnHealed;
 
 
     public void GetDamage(int damage)
     {
         int remainingDamage = damage;
+        
         if (barrier > 0)
         {
             if (barrier >= remainingDamage)
@@ -34,20 +40,30 @@ public abstract class Unit : MonoBehaviour
                 barrier = 0;
             }
         }
+        
         if (remainingDamage > 0)
         {
             currentHp -= remainingDamage;
+            
             if (currentHp < 0)
-            {
+                currentHp = 0;
+            
+            OnDamageReceived?.Invoke(damage);
+            
+            if (currentHp <= 0)
                 Dead();
-            }
         }
     }
 
     public void Heal(int healAmount)
     {
         if(healAmount <= 0) return;
+        
+        int oldHp = currentHp;
         currentHp = Mathf.Min(currentHp + healAmount, maxHp);
+        int actualHealed = currentHp - oldHp;
+        
+        OnHealed?.Invoke(actualHealed);
     }
     public void AddBarrier(int barrierAmount)
     {
@@ -58,10 +74,29 @@ public abstract class Unit : MonoBehaviour
         barrier = 0;
     }
 
+    public bool ConsumeCost(int amount)
+    {
+        if (currentCost < amount)
+            return false;
+
+        currentCost -= amount;
+        return true;
+    }
+
+    public void RestoreCost(int amount)
+    {
+        currentCost = Mathf.Min(currentCost + amount, maxCost);
+    }
+
+    public void ResetCost()
+    {
+        currentCost = 0;
+    }
+
     public void Dead()
     {
         currentHp = 0;
-        // Additional logic for when the unit dies can be added here
+        OnDead?.Invoke();
     }
 }
 
