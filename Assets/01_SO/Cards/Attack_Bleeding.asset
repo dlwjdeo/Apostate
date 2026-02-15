@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad6a68567137634a8e3a606866f34cd, type: 3}
   m_Name: Attack_Bleeding
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: 1
   cardName: "\uC9D5\uC218"
   description: 
   cost: 2
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: 0495baf2235a0194fbd0daf2c86e45ce, type: 3}
+  cardTypeImage: {fileID: 21300000, guid: 33f4bed28c25e5649b2da6741ee77ea9, type: 3}
   cardEffects:
   - rid: 8844077960191017032
   - rid: 8844077960191017033

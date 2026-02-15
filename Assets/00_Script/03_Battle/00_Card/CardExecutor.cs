@@ -6,9 +6,15 @@ public class CardExecutor : MonoBehaviour
 {
     [Header("드로우 설정")]
     [SerializeField] private int defaultDrawCount = 1;
+    private PlayerDeck playerDeck;
 
     // 카드 사용 결과 이벤트
     public event Action<CardExecutionResult> OnCardExecuted;
+
+    public void SetPlayerDeck(PlayerDeck deck)
+    {
+        playerDeck = deck;
+    }
 
     public CardExecutionResult Execute(CardData card, Unit caster, params Unit[] targets)
     {
@@ -158,9 +164,16 @@ public class CardExecutor : MonoBehaviour
     {
         int drawCount = effect.drawCount > 0 ? effect.drawCount : defaultDrawCount;
 
-        // 임시: 로그만 출력 (HandManager 구현 후 통합)
-        Debug.Log($"[CardExecutor] {drawCount}장의 카드를 드로우합니다!");
-        result.cardsDraw = drawCount;
+        if (playerDeck != null)
+        {
+            int actualDrawn = playerDeck.DrawCards(drawCount);
+            Debug.Log($"[CardExecutor] {actualDrawn}장의 카드를 드로우했습니다!");
+            result.cardsDraw = actualDrawn;
+        }
+        else
+        {
+            Debug.LogWarning("[CardExecutor] PlayerDeck이 설정되지 않았습니다!");
+        }
     }
 
     private void ApplyBonusDamage(BonusDamageIfDebuffEffect effect, Unit caster, Unit[] targets, CardExecutionResult result)

@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BattleManager : MonoBehaviour
 {
     [Header("참조")]
     [SerializeField] private Unit playerUnit;
-    [SerializeField] private Unit enemyUnit;
+    [SerializeField] private List<Unit> enemyUnits = new List<Unit>();
     [SerializeField] private CardExecutor cardExecutor;
+    [SerializeField] private PlayerDeck playerDeck;
+    [SerializeField] private HandCardUIManager handCardUIManager;
 
     [Header("턴 설정")]
     [SerializeField] private int initialCostPerTurn = 3;
@@ -25,14 +28,24 @@ public class BattleManager : MonoBehaviour
     public BattleState CurrentState => currentState;
     public int TurnCount => turnCount;
     public Unit PlayerUnit => playerUnit;
-    public Unit EnemyUnit => enemyUnit;
-    public Unit CurrentTurnUnit => 
-        currentState == BattleState.PlayerTurn ? playerUnit :
-        currentState == BattleState.EnemyTurn ? enemyUnit : null;
+    public IReadOnlyList<Unit> EnemyUnits => enemyUnits;
+    public Unit CurrentTurnUnit
+    {
+        get
+        {
+            if (currentState == BattleState.PlayerTurn) return playerUnit;
+            if (currentState == BattleState.EnemyTurn)
+            {
+                foreach (var u in enemyUnits)
+                    if (u != null && !u.IsDead) return u;
+            }
+            return null;
+        }
+    }
 
     private void Start()
     {
-        if (playerUnit == null || enemyUnit == null)
+        if (playerUnit == null || enemyUnits == null || enemyUnits.Count == 0)
         {
             return;
         }
@@ -46,12 +59,36 @@ public class BattleManager : MonoBehaviour
         playerTurnCount = 0;
         enemyTurnCount = 0;
 
+        // PlayerDeck 초기화
+        if (playerDeck != null)
+        {
+            // CardDatabase로부터 덱 초기화
+            playerDeck.InitializeFromDatabase();
+        }
+        else
+        {
+            Debug.LogError("[BattleManager] PlayerDeck이 설정되지 않았습니다!");
+            return;
+        }
+
+        // CardExecutor에 PlayerDeck 설정
+        if (cardExecutor != null && playerDeck != null)
+        {
+            cardExecutor.SetPlayerDeck(playerDeck);
+            // 배틀 시작 시 덱 셔플
+            playerDeck.Shuffle();
+        }
+
         // 초기 비용 설정
         playerUnit.ResetCost();
         playerUnit.RestoreCost(initialCostPerTurn);
-        
-        enemyUnit.ResetCost();
-        enemyUnit.RestoreCost(initialCostPerTurn);
+
+        foreach (var e in enemyUnits)
+        {
+            if (e == null) continue;
+            e.ResetCost();
+            e.RestoreCost(initialCostPerTurn);
+        }
 
         SetState(BattleState.PlayerTurn);
     }
@@ -93,6 +130,18 @@ public class BattleManager : MonoBehaviour
         playerUnit.ResetCost();
         playerUnit.RestoreCost(initialCostPerTurn);
 
+        // 카드 드로우 (기본값 3장)
+        if (playerDeck != null)
+        {
+            playerDeck.DrawCards(initialCostPerTurn);
+
+            // UI 업데이트
+            if (handCardUIManager != null)
+            {
+                handCardUIManager.UpdateHandUI();
+            }
+        }
+
         OnTurnStart?.Invoke(playerUnit);
     }
 
@@ -109,22 +158,39 @@ public class BattleManager : MonoBehaviour
         enemyTurnCount++;
         turnCount++;
 
-        enemyUnit.ResetCost();
-        enemyUnit.RestoreCost(initialCostPerTurn);
+        foreach (var e in enemyUnits)
+        {
+            if (e == null) continue;
+            e.ResetCost();
+            e.RestoreCost(initialCostPerTurn);
+        }
 
-        OnTurnStart?.Invoke(enemyUnit);
-        
-        StartCoroutine(ProcessEnemyTurn());
+        StartCoroutine(ProcessAllEnemiesTurn());
     }
 
-    private IEnumerator ProcessEnemyTurn()
+    private IEnumerator ProcessAllEnemiesTurn()
     {
-        yield return new WaitForSeconds(1.5f);
-        
-        // TODO: 적 AI 로직 호출
+        var units = enemyUnits.ToArray();
+        foreach (var unit in units)
+        {
+            if (unit == null || unit.IsDead) continue;
 
-        OnTurnEnd?.Invoke(enemyUnit);
+            OnTurnStart?.Invoke(unit);
+
+            // TODO: 적 AI 로직 호출 또는 Unit에 행동 위임
+            yield return StartCoroutine(ProcessEnemyTurn(unit));
+
+            OnTurnEnd?.Invoke(unit);
+            yield return new WaitForSeconds(0.3f);
+        }
+
         StartCoroutine(TransitionToNextTurn());
+    }
+
+    private IEnumerator ProcessEnemyTurn(Unit unit)
+    {
+        // 기본 대기(애니메이션/이펙트 등)
+        yield return new WaitForSeconds(1.0f);
     }
 
     private IEnumerator TransitionToNextTurn()
@@ -157,8 +223,13 @@ public class BattleManager : MonoBehaviour
             SetState(BattleState.PlayerLose);
             return true;
         }
-
-        if (enemyUnit.IsDead)
+        // 전투 종료: 모든 적이 죽었는지 확인
+        bool anyAlive = false;
+        foreach (var e in enemyUnits)
+        {
+            if (e != null && !e.IsDead) { anyAlive = true; break; }
+        }
+        if (!anyAlive)
         {
             SetState(BattleState.PlayerWin);
             return true;
@@ -176,7 +247,7 @@ public class BattleManager : MonoBehaviour
             PlayerTurns = playerTurnCount,
             EnemyTurns = enemyTurnCount,
             FinalPlayerHp = playerUnit.CurrentHp,
-            FinalEnemyHp = enemyUnit.CurrentHp
+            FinalEnemyHp = GetTotalEnemyHp()
         };
 
         OnBattleEnd?.Invoke(result);
@@ -220,6 +291,23 @@ public class BattleManager : MonoBehaviour
         else
         {
             Debug.LogWarning("[BattleManager] CardExecutor가 설정되지 않았습니다!");
+            return false;
+        }
+
+        // 손에서 카드 제거
+        if (playerDeck != null)
+        {
+            playerDeck.UseCard(card);
+
+            // UI 업데이트
+            if (handCardUIManager != null)
+            {
+                handCardUIManager.UpdateHandUI();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("[BattleManager] PlayerDeck이 설정되지 않았습니다!");
         }
 
         return true;
@@ -247,7 +335,11 @@ public class BattleManager : MonoBehaviour
     [ContextMenu("즉시 전투 종료 - 플레이어 승리")]
     private void DebugWin()
     {
-        enemyUnit.GetDamage(999);
+        foreach (var e in enemyUnits)
+        {
+            if (e == null) continue;
+            e.GetDamage(999);
+        }
         CheckBattleEnd();
     }
 
@@ -256,6 +348,14 @@ public class BattleManager : MonoBehaviour
     {
         playerUnit.GetDamage(999);
         CheckBattleEnd();
+    }
+
+    private int GetTotalEnemyHp()
+    {
+        int sum = 0;
+        foreach (var e in enemyUnits)
+            if (e != null) sum += e.CurrentHp;
+        return sum;
     }
 }
 

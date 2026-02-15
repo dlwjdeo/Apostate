@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aad6a68567137634a8e3a606866f34cd, type: 3}
   m_Name: Shield
   m_EditorClassIdentifier: Assembly-CSharp::CardData
+  id: 3
   cardName: "\uBC29\uD328"
   description: 
   cost: 1
-  cardImage: {fileID: 0}
+  cardImage: {fileID: 21300000, guid: bef34c20499f19544ba808bae2d224b1, type: 3}
+  cardTypeImage: {fileID: 21300000, guid: 49957140fcceb97449db4b08ba99e943, type: 3}
   cardEffects:
   - rid: 6312052845690486784
   references:

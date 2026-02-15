@@ -8047,6 +8047,7 @@ GameObject:
   - component: {fileID: 324649012}
   - component: {fileID: 324649014}
   - component: {fileID: 324649013}
+  - component: {fileID: 324649015}
   m_Layer: 5
   m_Name: HP
   m_TagString: Untagged
@@ -8112,6 +8113,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 324649011}
   m_CullTransparentMesh: 1
+--- !u!114 &324649015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 324649011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc0e15696c0583649a6b9edceddeee3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HPUI
+  hpImage: {fileID: 817361624}
 --- !u!1 &332715489
 GameObject:
   m_ObjectHideFlags: 0
@@ -20970,10 +20984,10 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_Sprite: {fileID: -8808476188587227525, guid: f122ff58c8f6a894db9248a69080e3cc, type: 3}
-  m_Type: 0
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
+  m_FillMethod: 0
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
@@ -46489,7 +46503,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BattleManager
   playerUnit: {fileID: 870013372}
-  enemyUnit: {fileID: 1322124063}
+  enemyUnits: []
   cardExecutor: {fileID: 2108173476}
   initialCostPerTurn: 3
   turnTransitionDelay: 0.5

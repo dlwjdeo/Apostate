@@ -6,10 +6,12 @@ using System.Collections.Generic;
 [CreateAssetMenu(fileName = "CardData", menuName = "Scriptable Objects/CardData")]
 public class CardData : ScriptableObject
 {
+    public int id;
     public string cardName;
     [TextArea]public string description;
     public int cost;
     public Sprite cardImage;
+    public Sprite cardTypeImage;
 
     [SerializeReference] 
     public List<CardEffectBase> cardEffects = new();
@@ -105,6 +107,6 @@ public class BonusDamageIfDebuffEffect : CardEffectBase
 
     public DebuffType requiredDebuff = DebuffType.Bleed;
 
-    public int bonusDamageFlat = 0;     // ÃâÇ÷ÀÌ¸é +N
-    public int bonusDamagePerStack = 0; // ÃâÇ÷ ½ºÅÃ´ç +N
+    public int bonusDamageFlat = 0;     // ï¿½ï¿½ï¿½ï¿½ï¿½Ì¸ï¿½ +N
+    public int bonusDamagePerStack = 0; // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ã´ï¿½ +N
 }
