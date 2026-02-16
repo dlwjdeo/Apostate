@@ -1,16 +1,29 @@
+using System;
 using UnityEngine;
 
 public class Enemy : Unit
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private GameObject hpUIPrefab;
+    private void Awake()
     {
-        
+        BindHPUI();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void BindHPUI()
     {
-        
+        if (hpUIPrefab != null)
+        {
+            GameObject hpUIObj = Instantiate(hpUIPrefab, UIManager.Instance.InGameUIRoot.transform);
+            HPUI hpUI = hpUIObj.GetComponentInChildren<HPUI>();
+            if (hpUI != null)
+            {
+                hpUI.Bind(this);
+            }
+        }
+    }
+
+    public virtual void ExcuteTurn(Unit player)
+    {
+        player.GetDamage(5);
     }
 }

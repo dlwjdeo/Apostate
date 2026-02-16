@@ -11,7 +11,6 @@ public class CardData : ScriptableObject
     [TextArea]public string description;
     public int cost;
     public Sprite cardImage;
-    public Sprite cardTypeImage;
 
     [SerializeReference] 
     public List<CardEffectBase> cardEffects = new();

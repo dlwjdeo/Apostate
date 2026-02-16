@@ -12,7 +12,7 @@ public class CardButtonUI : MonoBehaviour
     [SerializeField] private Image cardImage;
     [SerializeField] private TextMeshProUGUI cardNameText;
     [SerializeField] private TextMeshProUGUI cardCostText;
-    [SerializeField] private Image cardTypeImage;
+    [SerializeField] private TextMeshProUGUI cardDescriptionText;
 
     private CardData cardData;
     private HandCardUIManager uiManager;
@@ -78,10 +78,9 @@ public class CardButtonUI : MonoBehaviour
             cardCostText.text = cardData.cost.ToString();
         }
 
-        // 카드 타입 이미지
-        if (cardTypeImage != null && cardData.cardTypeImage != null)
+        if (cardDescriptionText != null)
         {
-            cardTypeImage.sprite = cardData.cardTypeImage;
+            cardDescriptionText.text = cardData.description;
         }
     }
 

@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class HPUI : MonoBehaviour
 {
     [SerializeField] private Image hpImage;
+    [SerializeField] private TextMeshProUGUI hpText;
 
     private Unit boundUnit;
+    public Unit BoundUnit => boundUnit;
 
     public void Bind(Unit unit)
     {
@@ -40,5 +43,9 @@ public class HPUI : MonoBehaviour
     private void UpdateFill(int current, int max)
     {
         hpImage.fillAmount = max > 0 ? (float)current / max : 0f;
+        if (hpText != null)
+        {
+            hpText.text = $"{current} / {max}";
+        }
     }
 }

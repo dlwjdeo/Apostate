@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardData
   id: 0
   cardName: "\uAC15\uD0C0"
-  description: 
+  description: "\uC801\uC5D0\uAC8C 3 \uB370\uBBF8\uC9C0\uB97C \uC90D\uB2C8\uB2E4"
   cost: 1
   cardImage: {fileID: 21300000, guid: 0495baf2235a0194fbd0daf2c86e45ce, type: 3}
-  cardTypeImage: {fileID: 21300000, guid: 33f4bed28c25e5649b2da6741ee77ea9, type: 3}
   cardEffects:
   - rid: 6312052694012133449
   references:

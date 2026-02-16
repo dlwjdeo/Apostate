@@ -11,7 +11,7 @@ public abstract class Unit : MonoBehaviour
     [SerializeField] private int currentCost;
 
     public int MaxHp => maxHp;
-    public int CurrentHp => currentHp;
+    public int CurrentHp => Mathf.Min(currentHp, maxHp);
     public int Barrier => barrier;
     public int MaxCost => maxCost;
     public int CurrentCost => currentCost;
@@ -21,6 +21,7 @@ public abstract class Unit : MonoBehaviour
     public event Action OnDead;
     public event Action<int> OnDamageReceived;
     public event Action<int> OnHealed;
+    public event Action<int> OnCostChanged;
 
 
     public void GetDamage(int damage)
@@ -80,17 +81,20 @@ public abstract class Unit : MonoBehaviour
             return false;
 
         currentCost -= amount;
+        OnCostChanged?.Invoke(currentCost);
         return true;
     }
 
     public void RestoreCost(int amount)
     {
         currentCost = Mathf.Min(currentCost + amount, maxCost);
+        OnCostChanged?.Invoke(currentCost);
     }
 
     public void ResetCost()
     {
         currentCost = 0;
+        OnCostChanged?.Invoke(currentCost);
     }
 
     public void Dead()
